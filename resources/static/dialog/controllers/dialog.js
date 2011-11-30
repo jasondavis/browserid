@@ -227,7 +227,11 @@ BrowserID.Modules.Dialog = (function() {
         // tried this afterwards.
         self.onerror = null;
         self.success = true;
-        self.onsuccess(assertion);
+        var rv = {
+          assertion: assertion,
+          profile: profile
+        };
+        self.onsuccess(rv);
       },
 
       doProfile: function() {

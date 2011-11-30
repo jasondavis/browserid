@@ -59,7 +59,11 @@ a:hover { border-bottom: 2px solid black ; }
 <div class="step">
   <div class="number">3.</div>
   <div class="desc">Once an assertion is obtained, pass it up to the server for verification.  The assertion looks like this:</div>
+
   <div class="output" id="oAssertion">...</div>
+
+  Their profile information is:
+  <div class="output" id="oProfile">...</div>
 </div>
 
 <div class="step">
@@ -118,14 +122,34 @@ navigator.id.get(function(assertion) {
   // install a click handler for when the user clicks 'sign in'
   $("#clickForLogin").click(function(event) {
     event.preventDefault();
-    navigator.id.get(function(assertion) {
+    navigator.id.get(function(rv) {
+      var assertion = rv.assertion;
+      var profile = rv.profile;
+
       if (!assertion) {
         $("#oAssertion").text("user didn't select an identity.");
       } else {
         $("#oAssertion").text(assertion);
         checkAssertion(assertion);
-      };
-    }, {allowPersistent: true});
+      }
+
+      $("#oProfile").text("");
+      if(profile) {
+        $("<div></div>").text("Name: " + (profile.name || "Name not shared")).appendTo("#oProfile");
+
+        if(profile.photo) {
+          $("<img src='" + profile.photo + "' width=100 height=100 />").appendTo("#oProfile"); 
+        }
+        else {
+          $("<div>Photo not shared</div>").appendTo("#oProfile");
+        }
+      }
+      else {
+        $("#oProfile").text("Profile information not shared");
+      }
+    }, {allowPersistent: true,
+        getProfile: true
+       });
   });
 
   $("#logout").click(function(event) {

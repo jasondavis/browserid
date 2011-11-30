@@ -130,11 +130,6 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
-.profile input[type=text],
-.profile input[type=email] {
-  width: 250px;
-}
-
 button,
 .button {
     font-size: 14px;
