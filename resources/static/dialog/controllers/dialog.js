@@ -229,6 +229,14 @@ BrowserID.Modules.Dialog = (function() {
         self.onsuccess(assertion);
       },
 
+      doProfile: function() {
+
+        var model = bid.Models.Profile.create();
+        model.load();
+
+        startService("profile", model);
+      },
+
       doNotMe: function() {
         var self=this;
         user.logoutUser(self.publish.bind(self, "auth"), self.getErrorDialog(errors.logoutUser));

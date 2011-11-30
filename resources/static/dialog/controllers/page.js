@@ -42,7 +42,8 @@ BrowserID.Modules.PageModule = (function() {
       bid = BrowserID,
       dom = bid.DOM,
       screens = bid.Screens,
-      mediator = bid.Mediator;
+      mediator = bid.Mediator,
+      sc;
 
    function onSubmit(event) {
      event.stopPropagation();
@@ -54,7 +55,7 @@ BrowserID.Modules.PageModule = (function() {
      return false;
    }
 
-  var PageController = BrowserID.Class({
+  var PageController = bid.Module.extend({
     init: function(options) {
       options = options || {};
 
@@ -73,22 +74,30 @@ BrowserID.Modules.PageModule = (function() {
       if(options.errorTemplate) {
         self.renderError(options.errorTemplate, options.errorVars);
       }
+
+      sc.init.call(self, options);
     },
 
-    start: function() {
+    destroy: function() {
+      this.unbindAll();
+
+      sc.destroy.call(this);
+    },
+
+    start: function(data) {
       var self=this;
       self.bind("form", "submit", onSubmit);
       self.bind("#thisIsNotMe", "click", self.close.bind(self, "notme"));
+
+      sc.start.call(self, data);
     },
 
     stop: function() {
       this.unbindAll();
 
       dom.removeClass("body", "waiting");
-    },
 
-    destroy: function() {
-      this.stop();
+      sc.stop.call(this);
     },
 
     bind: function(target, type, callback, context) {
@@ -173,6 +182,8 @@ BrowserID.Modules.PageModule = (function() {
       }
     }
   });
+
+  sc = PageController.sc;
 
   return PageController;
 

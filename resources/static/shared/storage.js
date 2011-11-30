@@ -34,7 +34,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 BrowserID.Storage = (function() {
-
   var jwk,
       storage = localStorage;
 
@@ -53,6 +52,7 @@ BrowserID.Storage = (function() {
     storage.removeItem("tempKeypair");
     storage.removeItem("stagedOnBehalfOf");
     storage.removeItem("siteInfo");
+    storage.removeItem("profile");
   }
 
   function getEmails() {
@@ -191,6 +191,23 @@ BrowserID.Storage = (function() {
   }
 
 
+  function profileGet(key) {
+    var info = JSON.parse(storage.profile || "{}");
+    return info[key];
+  }
+
+  function profileSet(key, value) {
+    var info = JSON.parse(storage.profile || "{}");
+    info[key] = value;
+    storage.profile = JSON.stringify(info);
+  }
+
+  function profileRemove(key) {
+    var info = JSON.parse(storage.profile || "{}");
+    delete info[key];
+    storage.profile = JSON.stringify(info);
+  }
+
   return {
     /**
      * Add an email address and optional key pair.
@@ -256,6 +273,11 @@ BrowserID.Storage = (function() {
     storeTemporaryKeypair: storeTemporaryKeypair,
     retrieveTemporaryKeypair: retrieveTemporaryKeypair,
     setStagedOnBehalfOf: setStagedOnBehalfOf,
-    getStagedOnBehalfOf: getStagedOnBehalfOf
+    getStagedOnBehalfOf: getStagedOnBehalfOf,
+    profile: {
+      get: profileGet,
+      set: profileSet,
+      remove: profileRemove
+    }
   };
 }());

@@ -84,9 +84,11 @@
     <script type="text/javascript" src="/lib/hub.js"></script>
     <script type="text/javascript" src="/lib/module.js"></script>
     <script type="text/javascript" src="/lib/jschannel.js"></script>
+
     <script type="text/javascript" src="qunit/mocks/mocks.js"></script>
     <script type="text/javascript" src="qunit/mocks/xhr.js"></script>
     <script type="text/javascript" src="qunit/mocks/templates.js"></script>
+
     <script type="text/javascript" src="/shared/javascript-extensions.js"></script>
     <script type="text/javascript" src="/shared/renderer.js"></script>
     <script type="text/javascript" src="/shared/class.js"></script>
@@ -101,13 +103,18 @@
     <script type="text/javascript" src="/shared/tooltip.js"></script>
     <script type="text/javascript" src="/shared/validation.js"></script>
     <script type="text/javascript" src="/shared/helpers.js"></script>
+    <script type="text/javascript" src="/shared/module.js"></script>
 
     <script type="text/javascript" src="/dialog/resources/internal_api.js"></script>
     <script type="text/javascript" src="/dialog/resources/channel.js"></script>
     <script type="text/javascript" src="/dialog/resources/helpers.js"></script>
     <script type="text/javascript" src="/dialog/resources/state_machine.js"></script>
+    <script type="text/javascript" src="/dialog/resources/profile_model.js"></script>
 
     <script type="text/javascript" src="/dialog/controllers/page.js"></script>
+    <!-- Figure out the dependency order - perhaps make photo_uploader a non-module -->
+    <script type="text/javascript" src="/dialog/resources/photo_uploader.js"></script>
+
     <script type="text/javascript" src="/dialog/controllers/pickemail.js"></script>
     <script type="text/javascript" src="/dialog/controllers/addemail.js"></script>
     <script type="text/javascript" src="/dialog/controllers/dialog.js"></script>
@@ -115,6 +122,7 @@
     <script type="text/javascript" src="/dialog/controllers/authenticate.js"></script>
     <script type="text/javascript" src="/dialog/controllers/forgotpassword.js"></script>
     <script type="text/javascript" src="/dialog/controllers/required_email.js"></script>
+    <script type="text/javascript" src="/dialog/controllers/profile.js"></script>
 
     <script type="text/javascript" src="/pages/page_helpers.js"></script>
     <script type="text/javascript" src="/pages/add_email_address.js"></script>
@@ -150,11 +158,13 @@
     <script type="text/javascript" src="qunit/shared/storage_unit_test.js"></script>
     <script type="text/javascript" src="qunit/shared/network_unit_test.js"></script>
     <script type="text/javascript" src="qunit/shared/user_unit_test.js"></script>
+    <script type="text/javascript" src="qunit/shared/module_unit_test.js"></script>
 
     <script type="text/javascript" src="qunit/resources/internal_api_unit_test.js"></script>
     <script type="text/javascript" src="qunit/resources/helpers_unit_test.js"></script>
     <script type="text/javascript" src="qunit/resources/state_machine_unit_test.js"></script>
     <script type="text/javascript" src="qunit/resources/channel_unit_test.js"></script>
+    <script type="text/javascript" src="qunit/resources/profile-model_unit_test.js"></script>
 
     <script type="text/javascript" src="qunit/controllers/page_unit_test.js"></script>
     <script type="text/javascript" src="qunit/controllers/pickemail_unit_test.js"></script>
@@ -163,6 +173,7 @@
     <script type="text/javascript" src="qunit/controllers/authenticate_unit_test.js"></script>
     <script type="text/javascript" src="qunit/controllers/forgotpassword_unit_test.js"></script>
     <script type="text/javascript" src="qunit/controllers/required_email_unit_test.js"></script>
+    <script type="text/javascript" src="qunit/controllers/profile_unit_test.js"></script>
     // must go last or all other tests will fail.
     <script type="text/javascript" src="qunit/controllers/dialog_unit_test.js"></script>
 	</body>

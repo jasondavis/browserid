@@ -10,6 +10,7 @@
   moduleManager.register("forgot_password", modules.ForgotPassword);
   moduleManager.register("pick_email", modules.PickEmail);
   moduleManager.register("required_email", modules.RequiredEmail);
+  moduleManager.register("profile", modules.Profile);
 
   moduleManager.start("dialog");
 

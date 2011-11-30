@@ -120,7 +120,8 @@
 
     subscribe("assertion_generated", function(msg, info) {
       if (info.assertion !== null) {
-        gotoState("doAssertionGenerated", info.assertion);
+        gotoState("doProfile", info.assertion);
+        //gotoState("doAssertionGenerated", info.assertion);
       }
       else {
         gotoState("doPickEmail");

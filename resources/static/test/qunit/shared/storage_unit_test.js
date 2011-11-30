@@ -179,5 +179,19 @@
   test("getStagedOnBehalfOf", function() {
     // XXX needs a test
   });
+
+  test("profile.set->get", function() {
+    storage.profile.set("fname", "BrowserID User");
+
+    equal(storage.profile.get("fname"), "BrowserID User", "fname set and retreived");
+  });
+
+  test("profile.set->remove", function() {
+    storage.profile.set("fname", "BrowserID User");
+    storage.profile.remove("fname");
+
+    equal(typeof storage.profile.get("fname"), "undefined", "fname was removed");
+
+  });
 }());
 
