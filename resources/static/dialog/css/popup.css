@@ -368,10 +368,22 @@ label[for=remember] {
   width: 200px;
 }
 
+.profile .inputs p {
+  line-height: 52px;
+  margin-top: 10px;
+}
+
 .profile img {
   width: 50px;
   height: 50px;
-  margin-top: 10px;
+  margin-right: 3px;
+  border: 1px solid #444;
+  cursor: pointer;
+  float: left;
+}
+
+.profile input[type=file] {
+  display: none;
 }
 
 

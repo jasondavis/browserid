@@ -38,10 +38,15 @@
     }
   }
 
+  function onPhotoClick(event) {
+    $("#photo_select").click();
+  }
+
   var PhotoUploader = bid.Modules.PageModule.extend({
     start: function(data) {
       var self=this;
       self.bind("#photo_select", "change", onPhotoChange);
+      self.bind("#photo", "click", onPhotoClick);
 
       self.onchange = data && data.onchange;
 
