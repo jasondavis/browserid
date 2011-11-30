@@ -37,15 +37,13 @@
 BrowserID.Modules.PickEmail = (function() {
   "use strict";
 
-  var ANIMATION_TIME = 250,
-      bid = BrowserID,
+  var bid = BrowserID,
       user = bid.User,
       errors = bid.Errors,
       storage = bid.Storage,
       helpers = bid.Helpers,
       dialogHelpers = helpers.Dialog,
-      dom = bid.DOM,
-      assertion;
+      dom = bid.DOM;
 
   function cancelEvent(event) {
     event && event.preventDefault();
@@ -116,8 +114,10 @@ BrowserID.Modules.PickEmail = (function() {
         // for self site.
         siteemail: storage.site.get(origin, "email"),
         allow_persistent: options.allow_persistent || false,
-        remember: storage.site.get(origin, "remember") || false
+        remember: storage.site.get(origin, "remember") || false,
+        show_profile: options.show_profile || false
       });
+
       dom.getElements("body").css("opacity", "1");
 
       if (dom.getElements("#selectEmail input[type=radio]:visible").length === 0) {

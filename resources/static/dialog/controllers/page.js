@@ -157,7 +157,6 @@ BrowserID.Modules.PageModule = (function() {
     },
 
     close: function(message, data) {
-      this.destroy();
       if (message) {
         this.publish(message, data);
       }

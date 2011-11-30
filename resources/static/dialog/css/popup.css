@@ -62,10 +62,6 @@ section > .contents {
     background-color: #fff;
 }
 
-#error ul, #error li {
-    list-style-type: none; 
-}
-
 #wait strong, #error strong {
     color: #222;
     font-weight: bold;
@@ -176,7 +172,6 @@ div#required_email {
 }
 
 #signIn .vertical ul {
-  list-style-type: none;
   position: relative;
 }
 
@@ -230,6 +225,10 @@ label {
 
 label.selectable {
     cursor: pointer;
+}
+
+input[type=checkbox] + label {
+    display: inline;
 }
 
 .inputs > li > label {

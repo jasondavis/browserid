@@ -151,7 +151,7 @@ BrowserID.Modules.Dialog = (function() {
 
           self.bind(win, "unload", onWinUnload);
 
-          self.doCheckAuth();
+          self.publish("start", params);
         }
       },
 
@@ -179,14 +179,15 @@ BrowserID.Modules.Dialog = (function() {
         }
       },
 
-      doPickEmail: function() {
+      doPickEmail: function(showProfile) {
         var self=this;
         startService("pick_email", {
           // XXX ideal is to get rid of this and have a User function
           // that takes care of getting email addresses AND the last used email
           // for this site.
           origin: user.getHostname(),
-          allow_persistent: self.allowPersistent
+          allow_persistent: self.allowPersistent,
+          show_profile: showProfile
         });
       },
 
@@ -219,7 +220,7 @@ BrowserID.Modules.Dialog = (function() {
           self.getErrorDialog(errors.getAssertion));
       },
 
-      doAssertionGenerated: function(assertion) {
+      doAssertionGenerated: function(assertion, profile) {
         var self=this;
         // Clear onerror before the call to onsuccess - the code to onsuccess
         // calls window.close, which would trigger the onerror callback if we

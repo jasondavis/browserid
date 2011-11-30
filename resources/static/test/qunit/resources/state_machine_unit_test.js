@@ -42,7 +42,9 @@
       machine,
       controllerMock;
 
-  var ControllerMock = function() {}
+  var ControllerMock = function() {
+    this.called = {}; 
+  };
   ControllerMock.prototype = {
     doOffline: function() {
       this.offline = true;
@@ -61,9 +63,7 @@
       this.emailsSynced = true;
     },
 
-    doPickEmail: function() {
-      this.pickingEmail = true;
-    },
+    doPickEmail: setCalled("doPickEmail"),
 
     doForgotPassword: function(email) {
       this.email = email;
@@ -97,9 +97,16 @@
 
     doCancel: function() {
       this.cancelled = true;
-    }
+    },
 
+    doProfile: setCalled('doProfile')
   };
+
+  function setCalled(name) {
+    return function() {
+      this.called[name] = true;
+    }
+  }
 
   function createMachine() {
     machine = bid.StateMachine.create();
@@ -169,15 +176,27 @@
       assertion: null
     });
 
-    equal(controllerMock.pickingEmail, true, "now picking email because of null assertion");
+    equal(controllerMock.called.doPickEmail, true, "will null assertion, go back to pick email");
   });
 
-  test("assertion_generated with assertion", function() {
+  test("assertion_generated with good assertion, no profile", function() {
     mediator.publish("assertion_generated", {
-      assertion: "assertion"
+      assertion: "biglongassertion" 
     });
 
-    equal(controllerMock.assertion, "assertion", "assertion generated with good assertion");
+    equal(controllerMock.assertion, "biglongassertion", "assertion generated, called correct function");
+  });
+
+  test("assertion_generated with good assertion, with profile", function() {
+    mediator.publish("start", {
+      getProfile: true
+    });
+
+    mediator.publish("assertion_generated", {
+      assertion: "biglongassertion" 
+    });
+
+    equal(controllerMock.called.doProfile, true, "profile called after assertion generation");
   });
 
   test("add_email", function() {
@@ -197,10 +216,10 @@
     mediator.publish("pick_email");
     mediator.publish("add_email");
 
-    controllerMock.pickingEmail = false;
+    controllerMock.called.doPickEmail = false;
     mediator.publish("cancel_state");
 
-    ok(controllerMock.pickingEmail, "user is picking an email");
+    ok(controllerMock.called.doPickEmail, "user is picking an email");
   });
 
   test("cancel_state", function() {
@@ -240,5 +259,6 @@
 
     equal(controllerMock.cancelled, true, "cancelled everything");
   });
+
 
 }());

@@ -86,6 +86,15 @@
         gotoState = pushState.bind(self),
         cancelState = popState.bind(self);
        
+    subscribe("start", function(msg, info) {
+      self.getProfile = !!(info && info.getProfile);
+      gotoState("doCheckAuth");
+    });
+
+    subscribe("cancel", function() {
+      gotoState("doCancel");
+    });
+
     subscribe("offline", function(msg, info) {
       gotoState("doOffline");
     });
@@ -94,16 +103,20 @@
       cancelState();
     });
 
+    subscribe("auth", function(msg, info) {
+      info = info || {};
+
+      gotoState("doAuthenticate", {
+        email: info.email
+      });
+    });
+
     subscribe("user_staged", function(msg, info) {
       gotoState("doConfirmUser", info.email);
     });
 
     subscribe("user_confirmed", function() {
       gotoState("doEmailConfirmed");
-    });
-
-    subscribe("pick_email", function() {
-      gotoState("doPickEmail");
     });
 
     subscribe("authenticated", function(msg, info) {
@@ -118,13 +131,26 @@
       gotoState("doConfirmUser", info.email);
     });
 
+    subscribe("pick_email", function() {
+      gotoState("doPickEmail", self.getProfile);
+    });
+
+    subscribe("notme", function() {
+      gotoState("doNotMe");
+    });
+
     subscribe("assertion_generated", function(msg, info) {
       if (info.assertion !== null) {
-        gotoState("doProfile", info.assertion);
-        //gotoState("doAssertionGenerated", info.assertion);
+        if(self.getProfile) {
+          self.assertion = info.assertion;
+          gotoState("doProfile");
+        }
+        else {
+          gotoState("doAssertionGenerated", info.assertion);
+        }
       }
       else {
-        gotoState("doPickEmail");
+        gotoState("doPickEmail", self.getProfile);
       }
     });
 
@@ -140,25 +166,10 @@
       gotoState("doEmailConfirmed");
     });
 
-    subscribe("notme", function() {
-      gotoState("doNotMe");
+    subscribe("profile_ready", function(msg, info) {
+      gotoState("doAssertionGenerated", self.assertion, info);
     });
 
-    subscribe("auth", function(msg, info) {
-      info = info || {};
-
-      gotoState("doAuthenticate", {
-        email: info.email
-      });
-    });
-
-    subscribe("start", function() {
-      gotoState("doCheckAuth");
-    });
-
-    subscribe("cancel", function() {
-      gotoState("doCancel");
-    });
   }
 
   var StateMachine = BrowserID.Class({
@@ -174,6 +185,8 @@
 
     stop: function() {
       unsubscribeAll();
+      var self=this;
+      self.assertion = self.getProfile = null;
     }
   });
 

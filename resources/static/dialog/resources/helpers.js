@@ -66,13 +66,11 @@
     var self=this;
     user.getAssertion(email, function(assert) {
       assert = assert || null;
-      animateClose(function() {
-        self.close("assertion_generated", {
-          assertion: assert
-        });
-
-        if (callback) callback(assert);
+      self.close("assertion_generated", {
+        assertion: assert
       });
+
+      if (callback) callback(assert);
     }, self.getErrorDialog(errors.getAssertion));
   }
 
