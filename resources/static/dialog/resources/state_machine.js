@@ -120,7 +120,7 @@
     });
 
     subscribe("authenticated", function(msg, info) {
-      gotoState("doSyncThenPickEmail");
+      gotoState("doSync");
     });
 
     subscribe("forgot_password", function(msg, info) {
@@ -131,7 +131,7 @@
       gotoState("doConfirmUser", info.email);
     });
 
-    subscribe("pick_email", function() {
+    subscribe("synced", function() {
       gotoState("doPickEmail", self.getProfile);
     });
 

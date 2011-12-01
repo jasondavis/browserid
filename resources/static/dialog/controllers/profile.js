@@ -52,17 +52,6 @@ BrowserID.Modules.Profile = (function() {
     return key === "photo";
   }
 
-  function loadFormData(model) {
-    model.keys().forEach(function(key) {
-      if(useSrc(key)) {
-        dom.setAttr(getSelector(key), "src", model.get(key));
-      }
-      else {
-        dom.setInner(getSelector(key), model.get(key));
-      }
-    });
-  }
-
   function saveFormData() {
     var model = this.getStartData();
 
@@ -126,11 +115,9 @@ BrowserID.Modules.Profile = (function() {
   var Profile = bid.Modules.PageModule.extend({
     start: function(data) {
       var self=this;
-      self.renderDialog("profile");
+      self.renderDialog("profile", data.toObject());
 
       Profile.sc.start.call(self, data);
-
-      loadFormData.call(self, data);
 
       self.bind("form", "submit", formSubmit);
       self.bind("#ok", "click", ok);

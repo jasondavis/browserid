@@ -247,9 +247,9 @@ BrowserID.Modules.Dialog = (function() {
         user.logoutUser(self.publish.bind(self, "auth"), self.getErrorDialog(errors.logoutUser));
       },
 
-      doSyncThenPickEmail: function() {
+      doSync: function() {
         var self = this;
-        user.syncEmails(self.doPickEmail.bind(self),
+        user.syncEmails(self.publish.bind(self, "synced"),
           self.getErrorDialog(errors.signIn));
       },
 
@@ -265,7 +265,7 @@ BrowserID.Modules.Dialog = (function() {
               });
             }
             else if (authenticated) {
-              self.publish("pick_email");
+              self.publish("synced");
             } else {
               self.publish("auth");
             }

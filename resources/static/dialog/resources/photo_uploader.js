@@ -42,11 +42,23 @@
     $("#photo_select").click();
   }
 
+  function onLabelClick(event) {
+    var labelFor = "[name=" + dom.getAttr(event.target, "for") + "]";
+    var checked = dom.getAttr(labelFor, "checked");
+    if(checked) {
+      dom.removeAttr(labelFor, "checked");
+    }
+    else {
+      dom.setAttr(labelFor, "checked", "checked");
+    }
+  }
+
   var PhotoUploader = bid.Modules.PageModule.extend({
     start: function(data) {
       var self=this;
       self.bind("#photo_select", "change", onPhotoChange);
       self.bind("#photo", "click", onPhotoClick);
+      self.bind("input[type=checkbox] + label", "click", onLabelClick);
 
       self.onchange = data && data.onchange;
 
