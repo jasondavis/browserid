@@ -78,7 +78,7 @@ BrowserID.Modules.AddEmail = (function() {
       AddEmail.sc.start.call(self, options);
     },
     submit: addEmail
-    // START TESTING API
+    // BEGIN TESTING API
     ,
     addEmail: addEmail,
     cancelAddEmail: cancelAddEmail

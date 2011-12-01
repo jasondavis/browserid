@@ -130,13 +130,10 @@
       email: email,
       authenticated: false,
       ready: function() {
+        ok($("#error").is(":visible"), "Error message is visible");
+        start();
       }
     });
-
-    setTimeout(function() {
-      ok($("#error").is(":visible"), "Error message is visible");
-      start();
-    }, 500);
   });
 
   asyncTest("user who is authenticated, email belongs to user", function() {

@@ -36,10 +36,10 @@
  * ***** END LICENSE BLOCK ***** */
 (function() {
   var bid = BrowserID,
-      user = bid.User,
       mediator = bid.Mediator,
       subscriptions = [],
-      stateStack = [];
+      stateStack = [],
+      controller;
 
   function subscribe(message, cb) {
     subscriptions.push(mediator.subscribe(message, cb));
@@ -52,10 +52,9 @@
   }
 
   function pushState(funcName) {
-    var args = [].slice.call(arguments, 1),
-        controller = this.controller;
+    var args = [].slice.call(arguments, 1);
 
-    // Remember the state and the information for the state in case we have to 
+    // Remember the state and the information for the state in case we have to
     // go back to it.
     stateStack.push({
       funcName: funcName,
@@ -65,7 +64,7 @@
     controller[funcName].apply(controller, args);
   }
 
-  // Used for when the current state is being cancelled and the user wishes to 
+  // Used for when the current state is being cancelled and the user wishes to
   // go to the previous state.
   function popState() {
     // Skip the first state, it is where the user is at now.
@@ -75,23 +74,63 @@
     var gotoState = stateStack[stateStack.length - 1];
 
     if(gotoState) {
-      var controller = this.controller;
       controller[gotoState.funcName].apply(controller, gotoState.args);
     }
   }
 
   function startStateMachine() {
     var self = this,
-        controller = self.controller,
         gotoState = pushState.bind(self),
         cancelState = popState.bind(self);
-       
+
     subscribe("offline", function(msg, info) {
       gotoState("doOffline");
     });
 
-    subscribe("cancel_state", function(msg, info) {
-      cancelState();
+    subscribe("start", function(msg, info) {
+      info = info || {};
+
+      self.hostname = info.hostname;
+      self.allowPersistent = !!info.allowPersistent;
+      self.requiredEmail = info.requiredEmail;
+
+      gotoState("doCheckAuth");
+    });
+
+    subscribe("cancel", function() {
+      gotoState("doCancel");
+    });
+
+    subscribe("window_unload", function() {
+      if(!self.success) {
+        bid.Storage.setStagedOnBehalfOf("");
+        gotoState("doCancel");
+      }
+    });
+
+    subscribe("authentication_checked", function(msg, info) {
+      var authenticated = info.authenticated;
+
+      if (self.requiredEmail) {
+        // XXX get this out of here and into the state machine!
+        gotoState("doAuthenticateWithRequiredEmail", {
+          email: self.requiredEmail,
+          authenticated: authenticated
+        });
+      }
+      else if (authenticated) {
+        mediator.publish("pick_email");
+      } else {
+        mediator.publish("authenticate");
+      }
+    });
+
+    subscribe("authenticate", function(msg, info) {
+      info = info || {};
+
+      gotoState("doAuthenticate", {
+        email: info.email
+      });
     });
 
     subscribe("user_staged", function(msg, info) {
@@ -103,7 +142,18 @@
     });
 
     subscribe("pick_email", function() {
-      gotoState("doPickEmail");
+      gotoState("doPickEmail", {
+        origin: self.hostname,
+        allow_persistent: self.allowPersistent
+      });
+    });
+
+    subscribe("notme", function() {
+      gotoState("doNotMe");
+    });
+
+    subscribe("logged_out", function() {
+      mediator.publish("authenticate");
     });
 
     subscribe("authenticated", function(msg, info) {
@@ -119,6 +169,7 @@
     });
 
     subscribe("assertion_generated", function(msg, info) {
+      self.success = true;
       if (info.assertion !== null) {
         gotoState("doAssertionGenerated", info.assertion);
       }
@@ -139,37 +190,27 @@
       gotoState("doEmailConfirmed");
     });
 
-    subscribe("notme", function() {
-      gotoState("doNotMe");
+    subscribe("cancel_state", function(msg, info) {
+      cancelState();
     });
 
-    subscribe("auth", function(msg, info) {
-      info = info || {};
-
-      gotoState("doAuthenticate", {
-        email: info.email
-      });
-    });
-
-    subscribe("start", function() {
-      gotoState("doCheckAuth");
-    });
-
-    subscribe("cancel", function() {
-      gotoState("doCancel");
-    });
   }
 
   var StateMachine = BrowserID.Class({
-    init: function() { 
+    init: function() {
       // empty
     },
 
     start: function(options) {
       options = options || {};
-      this.controller = options.controller;
+
+      controller = options.controller;
+      if(!controller) {
+        throw "start: controller must be specified";
+      }
+
       startStateMachine.call(this);
-    }, 
+    },
 
     stop: function() {
       unsubscribeAll();

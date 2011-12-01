@@ -1,5 +1,5 @@
-/*jshint browser:true, jQuery: true, forin: true, laxbreak:true */
-/*global BrowserID: true, PageController: true */
+/*jshint browsers:true, forin: true, laxbreak: true */
+/*global test: true, start: true, stop: true, module: true, ok: true, equal: true, BrowserID:true */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -34,55 +34,55 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-BrowserID.Modules.CheckRegistration = (function() {
+(function() {
   "use strict";
 
   var bid = BrowserID,
-      user = bid.User,
-      dom = bid.DOM,
-      errors = bid.Errors;
+      controller,
+      el;
 
-  var CheckRegistration = bid.Modules.PageModule.extend({
-    start: function(options) {
-      var self=this;
-      self.renderWait("confirmemail", {
-          email: options.email
-      });
-      self.email = options.email;
-      self.verifier = options.verifier;
-      self.verificationMessage = options.verificationMessage;
+  function reset() {
+    el = $("#controller_head");
+    el.find("#formWrap .contents").html("");
+    el.find("#wait .contents").html("");
+    el.find("#error .contents").html("");
+  }
 
-      self.bind("#back", "click", self.cancel);
+  function createController(config) {
+    controller = BrowserID.Modules.Actions.create();
+    controller.start(config);
+  }
 
-      CheckRegistration.sc.start.call(self, options);
+  // XXX Make a test helper class for this.
+  function checkNetworkError() {
+    ok($("#error .contents").text().length, "contents have been written");
+    ok($("#error #action").text().length, "action contents have been written");
+    ok($("#error #network").text().length, "network contents have been written");
+  }
+
+  module("controllers/actions", {
+    setup: function() {
+      reset();
     },
 
-    startCheck: function(oncomplete) {
-      var self=this;
-      user[self.verifier](self.email, function(status) {
-        if (status === "complete") {
-          user.syncEmails(function() {
-            self.close(self.verificationMessage);
-            oncomplete && oncomplete();
-          });
-        }
-        else if (status === "mustAuth") {
-          self.close("auth", { email: self.email });
-          oncomplete && oncomplete();
-        }
-      }, self.getErrorDialog(errors.registration, oncomplete));
-    },
-
-    cancel: function() {
-      var self=this;
-      // XXX this should change to cancelEmailValidation for email, but this
-      // will work.
-      user.cancelUserValidation();
-      self.close("cancel_state");
+    teardown: function() {
+      if(controller) {
+        controller.destroy();
+      }
+      reset();
     }
-
   });
 
-  return CheckRegistration;
+  asyncTest("doOffline", function() {
+    createController({
+      ready: function() {
+        controller.doOffline();
+        ok($("#error .contents").text().length, "contents have been written");
+        ok($("#error #offline").text().length, "offline error message has been written");
+        start();
+      }
+    });
+  });
 
 }());
+

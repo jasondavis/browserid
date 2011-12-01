@@ -125,19 +125,12 @@ BrowserID.Modules.PageModule = (function() {
       $("#wait").stop().hide().fadeIn(ANIMATION_TIME);
     },
 
-    renderError: function(body, body_vars) {
+    renderError: function(body, body_vars, oncomplete) {
       screens.error(body, body_vars);
-      $("#error").stop().css('opacity', 1).hide().fadeIn(ANIMATION_TIME);
 
-      /**
-       * TODO XXX - Use the error-display for this.
-       */
-      this.bind("#openMoreInfo", "click", function(event) {
-        event.preventDefault();
+      bid.ErrorDisplay.start();
 
-        $("#moreInfo").slideDown();
-        $("#openMoreInfo").css({visibility: "hidden"});
-      });
+      $("#error").stop().css('opacity', 1).hide().fadeIn(ANIMATION_TIME, oncomplete);
     },
 
     validate: function() {
@@ -162,14 +155,16 @@ BrowserID.Modules.PageModule = (function() {
      * Get a curried function to an error dialog.
      * @method getErrorDialog
      * @method {object} action - info to use for the error dialog.  Should have
+     * @method {function} [onerror] - callback to call after the
+     * error has been displayed.
      * two fields, message, description.
      */
-    getErrorDialog: function(action) {
+    getErrorDialog: function(action, onerror) {
       var self=this;
       return function(lowLevelInfo) {
         self.renderError("error", $.extend({
           action: action
-        }, lowLevelInfo));
+        }, lowLevelInfo), onerror);
       }
     }
   });
