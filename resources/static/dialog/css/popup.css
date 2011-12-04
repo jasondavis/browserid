@@ -229,6 +229,7 @@ label.selectable {
 
 input[type=checkbox] + label {
     display: inline;
+    cursor: pointer;
 }
 
 .inputs > li > label {
@@ -370,7 +371,7 @@ label[for=remember] {
 
 .profile p {
   line-height: 52px;
-  margin-top: 10px;
+/*  margin-top: 10px;*/
 }
 
 .profile img {
@@ -378,12 +379,14 @@ label[for=remember] {
   height: 50px;
   margin-right: 3px;
   cursor: pointer;
-  float: left;
+  /*float: left;*/
   line-height: 23px;
   text-align: center;
   background: white;
   color: #999;
   padding: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .profile input[type=file] {
@@ -395,6 +398,3 @@ label[for=remember] {
   cursor: pointer;
 }
 
-input[type=checkbox] + label {
-  cursor: pointer;
-}

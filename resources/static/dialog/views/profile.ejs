@@ -4,20 +4,21 @@
     <ul class="inputs">
       <li>
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= name %>" data-field />
 
         <input type="checkbox" checked="checked" name="allow_name" for="name" />
         <label for="allow_name">Allow</label>
+
+        <input type="text" id="name" name="name" value="<%= name %>" data-field />
       </li>
 
       <li>
         <label for="photo_select">Photo:</label>
-        <input type="file" id="photo_select" name="photo_select" accept="image/*" <% if (!photo) { %>title="Upload a profile photo!" <% } %> />
 
         <p>
-          <img width="50" height="50" id="photo" name="photo" alt="Profile photo" src="<%= photo %>" />
+          <input type="file" id="photo_select" name="photo_select" accept="image/*" <% if (!photo) { %>title="Upload a profile photo!" <% } %> />
           <input type="checkbox" checked="checked" name="allow_photo" for="photo" />
           <label for="allow_photo">Allow</label>
+          <img width="50" height="50" id="photo" name="photo" alt="Profile photo" src="<%= photo %>" />
         </p>
       </li>
     </ul>
